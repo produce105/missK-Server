@@ -1,6 +1,14 @@
+/**
+ * Copyright (c) 2016 Produce105 - miss_k
+ *
+ * Main component - registers all the screens
+ *
+ * @author hogyun
+ */
+
 let express = require("express");
 let path = require("path");
-let favicon = require("serve-favicon");
+const favicon = require("serve-favicon");
 let logger = require("morgan");
 let cookieParser = require("cookie-parser");
 let bodyParser = require("body-parser");
@@ -8,6 +16,8 @@ let bodyParser = require("body-parser");
 let index = require("./lib/routes/index");
 
 let app = express();
+
+
 
 // remove x-powered-by header
 app.disable("x-powered-by");
@@ -17,11 +27,14 @@ app.disable("x-powered-by");
 // app.set("view engine", "jade");
 
 // uncomment after placing your favicon in /lib
-app.use(express.static(__dirname + "./lib"));
+// app.use(express.static(__dirname + "./lib"));
+app.use(favicon(path.join(__dirname, "./lib", "public", "favicon.ico")));
 app.use(logger("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+
 
 // Router
 app.use("/", index);

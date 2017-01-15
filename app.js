@@ -1,3 +1,10 @@
+/**
+ * Copyright (c) 2016 Produce105 - miss_k
+ *
+ * Main component - registers all the screens
+ *
+ * @author hogyun
+ */
 "use strict";
 var express = require("express");
 var path = require("path");
@@ -13,7 +20,8 @@ app.disable("x-powered-by");
 // app.set("views", path.join(__dirname, "views"));
 // app.set("view engine", "jade");
 // uncomment after placing your favicon in /lib
-app.use(express.static(__dirname + "./lib"));
+// app.use(express.static(__dirname + "./lib"));
+app.use(favicon(path.join(__dirname, "./lib", "public", "favicon.ico")));
 app.use(logger("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
