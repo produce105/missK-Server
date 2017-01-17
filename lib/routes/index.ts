@@ -10,6 +10,7 @@
 import express = require("express");
 let request = require("request");
 let router = express.Router();
+let querystring = require("querystring");
 const bunyan = require("bunyan");
 
 
@@ -17,6 +18,7 @@ const bunyan = require("bunyan");
 import dust from "./../controllers/dust";
 import publicAPI from "./../controllers/publicAPI";
 import CONST from "./../../const";
+import {escape} from "querystring";
 
 // construct
 let Dust = new dust();
@@ -111,13 +113,10 @@ router.delete("/dust/:id", (req, res) => {
 });
 
 /*
-  아래 코드는 테스트중...
- */
-
-/*
  Request to Open API (Air Polution predict)
+ TODO: 날짜별로 조회하기. querystring으로 ? 뒤에 날짜가 오는 것 별로 조회. 또는 시간별 조회
  */
-router.get("/test1", (req, res) => {
+router.get("/dustpredicate", (req, res) => {
   PublicAPI.getAirPolutionPredict().then((result) => {
     res.status(200).json({data: result});
   }).catch((err) => {
@@ -128,29 +127,14 @@ router.get("/test1", (req, res) => {
 
 /*
  Request to Open API (Air Polution info)
+ TODO: 관측소별 조회, dataTerm별 조회, pageNo별 조회, numOfRows별 조회
  */
-router.get("/test2", (req, res) => {
+router.get("/dustinfo", (req, res) => {
   PublicAPI.getAirPolutionInfo().then((result) => {
     res.status(200).json({data: result});
   }).catch((err) => {
     res.status(500).json({res: "predict fail", errorMsg: err});
     log.warn("predict fail" + new Date().getUTCDate());
-  });
-});
-
-/*
- Test Route
- */
-router.get("/test", (req, res) => {
-  let options = {
-    method: "GET",
-    uri: "http://www.naver.com",
-  };
-
-  request(options, function (error, response, body) {
-    if (error) throw new Error(error);
-    console.log(body);
-    res.status(200).json({status: body});
   });
 });
 

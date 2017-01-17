@@ -12,12 +12,12 @@ mongoose.Promise = global.Promise;
 
 const DustModel = mongoose.model("Dust", {name: String});
 
-
 export default class Dust {
     // name: String;
     constructor() {
         // this.name = "test";
     }
+
 
     createDust() {
         let dust = new DustModel({name: "dust1"});
