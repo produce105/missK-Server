@@ -8,6 +8,9 @@
 
 import express = require("express");
 import dust from "./../controllers/dust";
+import publicAPI from "./../controllers/publicAPI";
+
+import CONST from "./../../const";
 let router = express.Router();
 const bunyan = require("bunyan");
 const log = bunyan.createLogger({
@@ -16,16 +19,19 @@ const log = bunyan.createLogger({
     {
       level: "info",
       // stream: process.stdout,
-      path: __dirname + "/../../logs/myapp-info.log"
+      path: CONST.INFO_LOG_PATH
     },
     {
       level: "warn",
-      path: __dirname + "/../../logs/myapp-warn.log"
+      path: CONST.WARN_LOG_PATH
     }
   ]
 });
 
+
+// construct
 let Dust = new dust();
+let PublicAPI = new publicAPI();
 
 /*
  Create Dust
@@ -95,6 +101,69 @@ router.delete("/dust/:id", (req, res) => {
     res.status(500).json({res: "Dust delete fail", errorMsg: error});
     log.warn("Delete One Dust fail" + new Date().getUTCDate());
   });
+});
+
+/*
+  아래 코드는 테스트중...
+ */
+
+/*
+ Request to Open API (Air Polution predict)
+ */
+router.get("/test1", (req, res) => {
+  PublicAPI.getAirPolutionPredict().then((result) => {
+    res.status(200).json({data: result});
+  }).catch((err) => {
+    res.status(500).json({res: "Dust delete fail", errorMsg: err});
+    log.warn("test info fail" + new Date().getUTCDate());
+  });
+});
+
+/*
+ Request to Open API (Air Polution info)
+ */
+router.get("/test2", (req, res) => {
+  PublicAPI.getAirPolutionInfo().then((result) => {
+    res.status(200).json({data: result});
+  }).catch((err) => {
+    res.status(500).json({res: "predict fail", errorMsg: err});
+    log.warn("predict fail" + new Date().getUTCDate());
+  });
+});
+
+/*
+ Test Route
+ */
+router.get("/test/1", (req, res) => {
+  let options = {
+    "method": "GET",
+    "hostname": "openapi.airkorea.or.kr",
+    "port": null,
+    "path": "/openapi/services/rest/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty?stationName=%EC%A2%85%EB%A1%9C%EA%B5%AC&dataTerm=MONTH&pageNo=1&numOfRows=1000&ServiceKey=YhOH4oxqMgvxjmqtZ%252Fca99aak9j6ZNvPgN6jF7urvEAQgiS45uxA1BNpevxQLYQf8Aar%252Br%252FVt2pvwmtQwV7UuQ%253D%253D&ver=1.3&_returnType=json",
+    "headers": {
+      "cache-control": "no-cache",
+      "postman-token": "0a4e6762-74b2-589d-ee90-b04358391cc4"
+    }
+  };
+
+  let request = http.request(options, function (response) {
+    let chunks = [];
+
+    response.on("data", function (chunk) {
+      chunks.push(chunk);
+    });
+
+    response.on("end", function () {
+      let body = Buffer.concat(chunks);
+      console.log(body.toString());
+    });
+  });
+
+  request.end();
+});
+
+router.get("/proxy", (req, res) => {
+  console.log(req);
 });
 
 module.exports = router;
