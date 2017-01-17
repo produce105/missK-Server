@@ -6,13 +6,25 @@
  * @author hogyun
  */
 
+/** External dependencies **/
 import express = require("express");
-import dust from "./../controllers/dust";
-import publicAPI from "./../controllers/publicAPI";
-
-import CONST from "./../../const";
+let request = require("request");
 let router = express.Router();
 const bunyan = require("bunyan");
+
+
+/** Internal dependencies **/
+import dust from "./../controllers/dust";
+import publicAPI from "./../controllers/publicAPI";
+import CONST from "./../../const";
+
+// construct
+let Dust = new dust();
+let PublicAPI = new publicAPI();
+
+/*
+  Set Log variable
+ */
 const log = bunyan.createLogger({
   name: "miss_k_log",
   streams: [
@@ -27,11 +39,6 @@ const log = bunyan.createLogger({
     }
   ]
 });
-
-
-// construct
-let Dust = new dust();
-let PublicAPI = new publicAPI();
 
 /*
  Create Dust
@@ -134,36 +141,17 @@ router.get("/test2", (req, res) => {
 /*
  Test Route
  */
-router.get("/test/1", (req, res) => {
+router.get("/test", (req, res) => {
   let options = {
-    "method": "GET",
-    "hostname": "openapi.airkorea.or.kr",
-    "port": null,
-    "path": "/openapi/services/rest/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty?stationName=%EC%A2%85%EB%A1%9C%EA%B5%AC&dataTerm=MONTH&pageNo=1&numOfRows=1000&ServiceKey=YhOH4oxqMgvxjmqtZ%252Fca99aak9j6ZNvPgN6jF7urvEAQgiS45uxA1BNpevxQLYQf8Aar%252Br%252FVt2pvwmtQwV7UuQ%253D%253D&ver=1.3&_returnType=json",
-    "headers": {
-      "cache-control": "no-cache",
-      "postman-token": "0a4e6762-74b2-589d-ee90-b04358391cc4"
-    }
+    method: "GET",
+    uri: "http://www.naver.com",
   };
 
-  let request = http.request(options, function (response) {
-    let chunks = [];
-
-    response.on("data", function (chunk) {
-      chunks.push(chunk);
-    });
-
-    response.on("end", function () {
-      let body = Buffer.concat(chunks);
-      console.log(body.toString());
-    });
+  request(options, function (error, response, body) {
+    if (error) throw new Error(error);
+    console.log(body);
+    res.status(200).json({status: body});
   });
-
-  request.end();
-});
-
-router.get("/proxy", (req, res) => {
-  console.log(req);
 });
 
 module.exports = router;
