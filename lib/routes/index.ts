@@ -6,6 +6,12 @@
  * @author hogyun
  */
 
+/**
+ * 미세먼지 공공데이터 API 기술문서
+ * https://www.data.go.kr/commonUser/fileDownload.do?atchFileId=FILE_000000001331629&fileDetailSn=0
+ * 다운받아서 파라미터 등등 참조.
+ */
+
 /** External dependencies **/
 import express = require("express");
 let request = require("request");
@@ -40,6 +46,13 @@ const log = bunyan.createLogger({
       path: CONST.WARN_LOG_PATH
     }
   ]
+});
+
+/*
+ Create Dust
+ */
+router.get("/", (req, res, next) => {
+  res.status(200).json({status: "server On"});
 });
 
 /*
