@@ -14,6 +14,8 @@ var cookieParser = require("cookie-parser");
 var bodyParser = require("body-parser");
 var index = require("./lib/routes/index");
 var app = express();
+// post
+// middleware
 // remove x-powered-by header
 app.disable("x-powered-by");
 // view engine setup

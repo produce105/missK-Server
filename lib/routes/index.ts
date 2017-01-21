@@ -127,7 +127,8 @@ router.delete("/dust/:id", (req, res) => {
 
 /*
  Request to Open API (Air Polution predict)
- TODO: 날짜별로 조회하기. querystring으로 ? 뒤에 날짜가 오는 것 별로 조회. 또는 시간별 조회
+ 1. TODO: 날짜별로 조회하기. querystring으로 ? 뒤에 날짜가 오는 것 별로 조회. 또는 시간별 조회
+ 2. TODO: Server mongoDB에 저장
  */
 router.get("/dustpredicate", (req, res) => {
   PublicAPI.getAirPolutionPredict().then((result) => {
@@ -140,10 +141,13 @@ router.get("/dustpredicate", (req, res) => {
 
 /*
  Request to Open API (Air Polution info)
- TODO: 관측소별 조회, dataTerm별 조회, pageNo별 조회, numOfRows별 조회
+ 1. TODO: 관측소별 조회, dataTerm별 조회, pageNo별 조회, numOfRows별 조회
+ 2. TODO: Server mongoDB에 저장
+ 3. TODO: Google search keyword: get request parameter express
  */
 router.get("/dustinfo", (req, res) => {
-  PublicAPI.getAirPolutionInfo().then((result) => {
+  let position = req.position;
+  PublicAPI.getAirPolutionInfo(positon).then((result) => {
     res.status(200).json({data: result});
   }).catch((err) => {
     res.status(500).json({res: "predict fail", errorMsg: err});

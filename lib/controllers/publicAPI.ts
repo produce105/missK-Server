@@ -36,8 +36,10 @@ export default class PublicAPI {
         };
     };
 
-    getAirPolutionInfo() {
+    getAirPolutionInfo(position) {
         return new Promise((resolve, reject) => {
+            // Todo parameter 넘어온거 이 부분에서 받을 수 있게만.
+            // let positon = position;
             RequestService.requestToUrl(this.AIR_POLUTION_INFO_API_URL, this.AIR_POLUTION_INFO_OPTIONS).then((res) => {
                 resolve(JSON.parse(res.body));
             }).catch((err) => {
