@@ -6,14 +6,14 @@
  * @author hogyun
  */
 "use strict";
-var express = require("express");
-var path = require("path");
-var favicon = require("serve-favicon");
-var logger = require("morgan");
-var cookieParser = require("cookie-parser");
-var bodyParser = require("body-parser");
-var index = require("./lib/routes/index");
-var app = express();
+let express = require("express");
+let path = require("path");
+const favicon = require("serve-favicon");
+let logger = require("morgan");
+let cookieParser = require("cookie-parser");
+let bodyParser = require("body-parser");
+let index = require("./lib/routes/index");
+let app = express();
 // post
 // middleware
 // remove x-powered-by header
@@ -31,12 +31,12 @@ app.use(cookieParser());
 // Router
 app.use("/", index);
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
-    var err = new Error("Not Found");
+app.use((req, res, next) => {
+    let err = new Error("Not Found");
     next(err);
 });
 // error handler
-app.use(function (err, req, res, next) {
+app.use((err, req, res, next) => {
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get("env") === "development" ? err : {};

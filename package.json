@@ -4,12 +4,13 @@
   "private": true,
   "scripts": {
     "start": "npm run build:live",
-    "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- ./bin/www.ts"
+    "build:live": "concurrently \"tsc -w\" \"nodemon ./bin/www.js --config nodemon.json\""
   },
   "dependencies": {
     "@types/node": "^6.0.58",
     "body-parser": "~1.15.2",
     "bunyan": "^1.8.5",
+    "concurrently": "^3.1.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.2.0",
     "express": "~4.14.0",
@@ -18,7 +19,6 @@
     "nodemon": "^1.11.0",
     "request": "^2.79.0",
     "serve-favicon": "~2.3.0",
-    "ts-node": "^2.0.0",
     "tslint": "^4.3.1",
     "typescript": "^2.1.4"
   }

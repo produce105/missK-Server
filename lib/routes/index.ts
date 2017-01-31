@@ -134,7 +134,7 @@ router.get("/dustpredicate", (req, res) => {
   PublicAPI.getAirPolutionPredict().then((result) => {
     res.status(200).json({data: result});
   }).catch((err) => {
-    res.status(500).json({res: "Dust delete fail", errorMsg: err});
+    res.status(500).json({res: "Dust dustpredicate fail", errorMsg: err});
     log.warn("test info fail" + new Date().getUTCDate());
   });
 });
@@ -146,8 +146,9 @@ router.get("/dustpredicate", (req, res) => {
  3. TODO: Google search keyword: get request parameter express
  */
 router.get("/dustinfo", (req, res) => {
-  let position = req.position;
-  PublicAPI.getAirPolutionInfo(positon).then((result) => {
+  let position;
+  (req.hasOwnProperty("position")) ? position = req.position : position = "서울";
+  PublicAPI.getAirPolutionInfo(position).then((result) => {
     res.status(200).json({data: result});
   }).catch((err) => {
     res.status(500).json({res: "predict fail", errorMsg: err});

@@ -31,7 +31,7 @@ export default class PublicAPI {
         // 왜 ServiceKey는 querystring으로 안 했냐면 API_KEY에 %가 들어가 있어서 퍼센트 인코딩문제가 일어남. 그래서 하드코딩
         this.AIR_POLUTION_PRECIT_URL = CONST.OPEN_API_URL + CONST.AIR_PREDICATE + "?ServiceKey=" + CONST.OPEN_API_KEY;
         this.AIR_POLUTION_PRECIT_OPTIONS = {
-            searchDate: "2017-01-15",
+            searchDate: "2017-01-15", // Todo: searchDate를 params로 부터 받아온 값으로 바꾸기
             _returnType: "json"
         };
     };
@@ -41,7 +41,7 @@ export default class PublicAPI {
             // Todo parameter 넘어온거 이 부분에서 받을 수 있게만.
             // let positon = position;
             RequestService.requestToUrl(this.AIR_POLUTION_INFO_API_URL, this.AIR_POLUTION_INFO_OPTIONS).then((res) => {
-                resolve(JSON.parse(res.body));
+                resolve(JSON.parse(res["body"]));
             }).catch((err) => {
                 reject({err: err});
             });
@@ -51,7 +51,10 @@ export default class PublicAPI {
     getAirPolutionPredict() {
         return new Promise((resolve, reject) => {
             RequestService.requestToUrl(this.AIR_POLUTION_PRECIT_URL, this.AIR_POLUTION_PRECIT_OPTIONS).then((res) => {
-                resolve(JSON.parse(res.body));
+                // Todo: 지금껀 가장 최근 (배열에서 첫번째 요소)만 response로 줌. 잘 파싱해서 array로 줘도 되고 수민이 마음대로 :)
+                let parsedBody = JSON.parse(res["body"]);
+                console.log(parsedBody["list"][0]);
+                resolve(parsedBody["list"][0]);
             }).catch((err) => {
                 reject({err: err});
             });
