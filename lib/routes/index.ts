@@ -131,7 +131,8 @@ router.delete("/dust/:id", (req, res) => {
  2. TODO: Server mongoDB에 저장
  */
 router.get("/dustpredicate", (req, res) => {
-  PublicAPI.getAirPolutionPredict().then((result) => {
+  let searchDate = req.param('searchDate') || Dateformatter(new Date);
+  PublicAPI.getAirPolutionPredict(searchDate).then((result) => {
     res.status(200).json({data: result});
   }).catch((err) => {
     res.status(500).json({res: "Dust dustpredicate fail", errorMsg: err});
@@ -155,5 +156,16 @@ router.get("/dustinfo", (req, res) => {
     log.warn("predict fail" + new Date().getUTCDate());
   });
 });
+
+function Dateformatter(today)
+{
+  let month = ''+(today.getMonth()+1);
+  let date = ''+today.getDate();
+  if(month.length< 2)
+      month ='0'+month;
+  if(date.length< 2)
+      date ='0'+date;
+  return today.getFullYear()+'-'+month+'-'+date;
+}
 
 module.exports = router;

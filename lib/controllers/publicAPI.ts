@@ -9,6 +9,26 @@
 import RequestService from "./../services/requestService";
 import CONST from "./../../const";
 
+const mongoose = require("mongoose");
+mongoose.Promise = global.Promise;
+
+let Schema = mongoose.Schema;
+let dustInfoSchema = new Schema({
+  dataTime: Date,
+  no2Grade: Number,
+  no2Value: String
+
+});
+
+let dustPredictSchema = new Schema({
+  dataTime: String,
+  f_inform_data: String,
+  informGrade: String,
+  informCode: String
+});
+
+
+
 export default class PublicAPI {
     private AIR_POLUTION_PRECIT_URL: string;
     private AIR_POLUTION_INFO_API_URL: string;
@@ -48,8 +68,9 @@ export default class PublicAPI {
         });
     }
 
-    getAirPolutionPredict() {
+    getAirPolutionPredict(searchDate) {
         return new Promise((resolve, reject) => {
+            this.AIR_POLUTION_PRECIT_OPTIONS["searchDate"] = searchDate;
             RequestService.requestToUrl(this.AIR_POLUTION_PRECIT_URL, this.AIR_POLUTION_PRECIT_OPTIONS).then((res) => {
                 // Todo: 지금껀 가장 최근 (배열에서 첫번째 요소)만 response로 줌. 잘 파싱해서 array로 줘도 되고 수민이 마음대로 :)
                 let parsedBody = JSON.parse(res["body"]);
