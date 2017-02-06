@@ -131,7 +131,7 @@ router.delete("/dust/:id", (req, res) => {
  2. TODO: Server mongoDB에 저장
  */
 router.get("/dustpredicate", (req, res) => {
-  let searchDate = req.param('searchDate') || Dateformatter(new Date);
+  let searchDate = req.query.searchDate || Dateformatter(new Date);
   PublicAPI.getAirPolutionPredict(searchDate).then((result) => {
     res.status(200).json({data: result});
   }).catch((err) => {
@@ -147,13 +147,17 @@ router.get("/dustpredicate", (req, res) => {
  3. TODO: Google search keyword: get request parameter express
  */
 router.get("/dustinfo", (req, res) => {
-  let position;
-  (req.hasOwnProperty("position")) ? position = req.position : position = "서울";
-  PublicAPI.getAirPolutionInfo(position).then((result) => {
+  let location;
+  (req.query.hasOwnProperty("location")) ? location = req.query.location : location = "서울";
+  let term = req.query.term || "DAILY";
+  let pageNo = req.query.pageNo || 1;
+  let numOfRows = req.query.numOfRows || 1000;
+
+  PublicAPI.getAirPolutionInfo(location, term, pageNo, numOfRows).then((result) => {
     res.status(200).json({data: result});
   }).catch((err) => {
-    res.status(500).json({res: "predict fail", errorMsg: err});
-    log.warn("predict fail" + new Date().getUTCDate());
+    res.status(500).json({res: "dust info fail", errorMsg: err});
+    log.warn("dust info fail" + new Date().getUTCDate());
   });
 });
 

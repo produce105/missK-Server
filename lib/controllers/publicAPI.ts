@@ -14,20 +14,51 @@ mongoose.Promise = global.Promise;
 
 let Schema = mongoose.Schema;
 let dustInfoSchema = new Schema({
-  dataTime: Date,
-  no2Grade: Number,
-  no2Value: String
-
+    _returnType: String,
+    dataTerm: String,
+    khaiGrade:Number,
+    khaiValue:Number,
+    dataTime: Date,
+    mangName: String,
+    so2Grade: Number,
+    so2Value: Number,
+    no2Grade: Number,
+    no2Value: Number,
+    o3Grade: Number,
+    o3Value: Number,
+    coGrade: Number,
+    coValue: Number,
+    pm10Value: Number,
+    pm10Value24: Number,
+    pm10Grade: Number,
+    pm10Grade1h: Number,
+    pm25Value: Number,
+    pm25Value24: Number,
+    pm25Grade: Number,
+    pm25Grade1h: Number,
+    resultCode: String,
+    resultMsg: String,
+    rnum: Number,
+    serviceKey: String,
+    sidoName: String,
+    stationCode: String,
+    stationName: String,
+    totalCount: String,
+    ver: String,
+    pageNo: Number,
+    numOfRows: Number
 });
 
 let dustPredictSchema = new Schema({
   dataTime: String,
   f_inform_data: String,
+  informCause: String,
   informGrade: String,
   informCode: String
 });
 
-
+const DustInfoModel = mongoose.model("realdust",dustInfoSchema);
+const DustPredictModel = mongoose.model("predict",dustPredictSchema);
 
 export default class PublicAPI {
     private AIR_POLUTION_PRECIT_URL: string;
@@ -56,11 +87,25 @@ export default class PublicAPI {
         };
     };
 
-    getAirPolutionInfo(position) {
+    getAirPolutionInfo(location, term, pageNo, numOfRows) {
         return new Promise((resolve, reject) => {
             // Todo parameter 넘어온거 이 부분에서 받을 수 있게만.
-            // let positon = position;
+          //  console.log('NEW'+location+' '+term+' '+pageNo+' '+numOfRows);
+
+            this.AIR_POLUTION_INFO_OPTIONS["stationName"] = location;
+            this.AIR_POLUTION_INFO_OPTIONS["dataTerm"] = term;
+            this.AIR_POLUTION_INFO_OPTIONS["pageNo"] = pageNo;
+            this.AIR_POLUTION_INFO_OPTIONS["numOfRows"] = numOfRows;
+
             RequestService.requestToUrl(this.AIR_POLUTION_INFO_API_URL, this.AIR_POLUTION_INFO_OPTIONS).then((res) => {
+                let parsedBody = JSON.parse(res["body"]);
+
+                let dustInfo = new DustInfoModel();
+                dustInfo = parsedBody["list"][0];
+                // 노가다하기에 이상해서 완성안함.
+                dustInfo.save();
+                console.log(dustInfo);
+
                 resolve(JSON.parse(res["body"]));
             }).catch((err) => {
                 reject({err: err});
@@ -74,8 +119,18 @@ export default class PublicAPI {
             RequestService.requestToUrl(this.AIR_POLUTION_PRECIT_URL, this.AIR_POLUTION_PRECIT_OPTIONS).then((res) => {
                 // Todo: 지금껀 가장 최근 (배열에서 첫번째 요소)만 response로 줌. 잘 파싱해서 array로 줘도 되고 수민이 마음대로 :)
                 let parsedBody = JSON.parse(res["body"]);
-                console.log(parsedBody["list"][0]);
-                resolve(parsedBody["list"][0]);
+                console.log(searchDate)
+                for(let listNum=0; listNum < parsedBody["list"].length; listNum++)
+                {
+                    let newpredict = new DustPredictModel();
+                    newpredict.dataTime = parsedBody["list"][listNum]["dataTime"];
+                    newpredict.f_inform_data = parsedBody["list"][listNum]["f_inform_data"];
+                    newpredict.informCause = parsedBody["list"][listNum]["informCause"];
+                    newpredict.informGrade = parsedBody["list"][listNum]["informGrade"];
+                    newpredict.informCode = parsedBody["list"][listNum]["informCode"];
+                    newpredict.save();
+                }
+                resolve('Saved');
             }).catch((err) => {
                 reject({err: err});
             });
