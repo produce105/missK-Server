@@ -14,11 +14,7 @@ mongoose.Promise = global.Promise;
 
 let Schema = mongoose.Schema;
 let dustInfoSchema = new Schema({
-    _returnType: String,
-    dataTerm: String,
-    khaiGrade:Number,
-    khaiValue:Number,
-    dataTime: Date,
+    dataTime: String,
     mangName: String,
     so2Grade: Number,
     so2Value: Number,
@@ -35,30 +31,19 @@ let dustInfoSchema = new Schema({
     pm25Value: Number,
     pm25Value24: Number,
     pm25Grade: Number,
-    pm25Grade1h: Number,
-    resultCode: String,
-    resultMsg: String,
-    rnum: Number,
-    serviceKey: String,
-    sidoName: String,
-    stationCode: String,
-    stationName: String,
-    totalCount: String,
-    ver: String,
-    pageNo: Number,
-    numOfRows: Number
+    pm25Grade1h: Number
 });
 
 let dustPredictSchema = new Schema({
-  dataTime: String,
-  f_inform_data: String,
-  informCause: String,
-  informGrade: String,
-  informCode: String
+    dataTime: String,
+    f_inform_data: String,
+    informCause: String,
+    informGrade: String,
+    informCode: String
 });
 
 const DustInfoModel = mongoose.model("realdust",dustInfoSchema);
-const DustPredictModel = mongoose.model("predict",dustPredictSchema);
+const DustPredictModel = mongoose.model("predictdust",dustPredictSchema);
 
 export default class PublicAPI {
     private AIR_POLUTION_PRECIT_URL: string;
@@ -90,7 +75,7 @@ export default class PublicAPI {
     getAirPolutionInfo(location, term, pageNo, numOfRows) {
         return new Promise((resolve, reject) => {
             // Todo parameter 넘어온거 이 부분에서 받을 수 있게만.
-          //  console.log('NEW'+location+' '+term+' '+pageNo+' '+numOfRows);
+            console.log('NEW '+location+' '+term+' '+pageNo+' '+numOfRows);
 
             this.AIR_POLUTION_INFO_OPTIONS["stationName"] = location;
             this.AIR_POLUTION_INFO_OPTIONS["dataTerm"] = term;
@@ -100,13 +85,17 @@ export default class PublicAPI {
             RequestService.requestToUrl(this.AIR_POLUTION_INFO_API_URL, this.AIR_POLUTION_INFO_OPTIONS).then((res) => {
                 let parsedBody = JSON.parse(res["body"]);
 
-                let dustInfo = new DustInfoModel();
-                dustInfo = parsedBody["list"][0];
-                // 노가다하기에 이상해서 완성안함.
-                dustInfo.save();
-                console.log(dustInfo);
+                for(let listNum=0; listNum < parsedBody["list"].length; listNum++){
+                    let parsedBodyIdx =  parsedBody["list"][listNum];
+                    let dustInfo = new DustInfoModel();
+                    Object.keys(parsedBodyIdx).forEach((key)=>{
+                        dustInfo[key] = parsedBodyIdx[key];
+                    });
+                    dustInfo.save();
+                    console.log(dustInfo);
+                }
 
-                resolve(JSON.parse(res["body"]));
+                resolve("Saved");
             }).catch((err) => {
                 reject({err: err});
             });
