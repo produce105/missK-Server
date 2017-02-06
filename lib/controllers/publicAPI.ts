@@ -120,16 +120,16 @@ export default class PublicAPI {
                 // Todo: 지금껀 가장 최근 (배열에서 첫번째 요소)만 response로 줌. 잘 파싱해서 array로 줘도 되고 수민이 마음대로 :)
                 let parsedBody = JSON.parse(res["body"]);
                 console.log(searchDate)
-                for(let listNum=0; listNum < parsedBody["list"].length; listNum++)
-                {
+
+                for(let listNum=0; listNum < parsedBody["list"].length; listNum++){
+                    let parsedBodyIdx =  parsedBody["list"][listNum];
                     let newpredict = new DustPredictModel();
-                    newpredict.dataTime = parsedBody["list"][listNum]["dataTime"];
-                    newpredict.f_inform_data = parsedBody["list"][listNum]["f_inform_data"];
-                    newpredict.informCause = parsedBody["list"][listNum]["informCause"];
-                    newpredict.informGrade = parsedBody["list"][listNum]["informGrade"];
-                    newpredict.informCode = parsedBody["list"][listNum]["informCode"];
+                    Object.keys(parsedBodyIdx).forEach((key)=>{
+                      newpredict[key]= parsedBodyIdx[key];
+                    });
                     newpredict.save();
                 }
+
                 resolve('Saved');
             }).catch((err) => {
                 reject({err: err});
