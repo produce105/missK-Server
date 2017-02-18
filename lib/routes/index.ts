@@ -125,6 +125,24 @@ router.delete("/dust/:id", (req, res) => {
   });
 });
 
+
+/*
+ Request to MongoDB
+ 1. TODO: 오늘의 pm10 pm25 predication 반환하는거
+ */
+router.get("/getpredict", (req, res) => {
+  let date = req.query.date || Dateformatter(new Date);
+  let time = new Date().getHours();
+
+  PublicAPI.readPredictInfo(date,time).then((result) => {
+    res.status(200).json({res: "Dust get success", data: result});
+  }).catch((err) => {
+    res.status(500).json({res: "Dust get fail", errorMsg: err});
+    log.warn("test info fail" + new Date().getUTCDate());
+  });
+
+});
+
 /*
  Request to Open API (Air Polution predict)
  1. TODO: 날짜별로 조회하기. querystring으로 ? 뒤에 날짜가 오는 것 별로 조회. 또는 시간별 조회
@@ -148,7 +166,7 @@ router.get("/dustpredicate", (req, res) => {
  */
 router.get("/dustinfo", (req, res) => {
   let location;
-  (req.query.hasOwnProperty("location")) ? location = req.query.location : location = "서울";
+  (req.query.hasOwnProperty("location")) ? location = req.query.location : location = "종로구";
   let term = req.query.term || "DAILY";
   let pageNo = req.query.pageNo || 1;
   let numOfRows = req.query.numOfRows || 1000;
@@ -169,6 +187,7 @@ function Dateformatter(today)
       month ='0'+month;
   if(date.length< 2)
       date ='0'+date;
+
   return today.getFullYear()+'-'+month+'-'+date;
 }
 
