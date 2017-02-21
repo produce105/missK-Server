@@ -125,6 +125,25 @@ router.delete("/dust/:id", (req, res) => {
   });
 });
 
+/*
+ Request to MongoDB predict infomation
+ 1. TODO:
+ */
+router.get("/totalinfo", (req, res) => {
+  let lat = req.query.lat || 37.564939;
+  let long = req.query.long || 126.975914;
+  let date = req.query.date || Dateformatter(new Date);
+  let time = req.query.hour || new Date().getHours();
+
+  PublicAPI.getTotalInfo(lat,long,date,time).then((result) => {
+    res.status(200).json({res: "Total info get success", data: result});
+  }).catch((err) => {
+    res.status(500).json({res: "Total info get fail", errorMsg: err});
+    log.warn("test info fail" + new Date().getUTCDate());
+  });
+
+});
+
 
 /*
  Request to MongoDB
@@ -175,7 +194,7 @@ router.get("/dustpredicate", (req, res) => {
 });
 
 /*
-Request to Open API (Air Polution info) 
+Request to Open API (Air Polution info)
 1. TODO: cron 돌릴때 17개 측정소당 돌릴것
 2. TODO: HOURLY가 아니라서 중복데이터가 너무 많아짐 - 측정소당 시간정보만 가져올방법 찾아보기
  */
