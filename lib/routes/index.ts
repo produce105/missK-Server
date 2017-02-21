@@ -163,7 +163,8 @@ router.get("/getpredict", (req, res) => {
 
 /*
  Request to MongoDB predict infomation
- 1. TODO: HOURLY가 아니라서 중복데이터가 너무 많아짐 - 측정소당 시간정보만 가져올방법 찾아보기
+ 1. TODO: DAUM REST API랑 합치기
+ 2. TODO: 지금 시간 Pm정보가 없을때 최근 정보로 보여줄 방법 찾기
  */
 router.get("/totalinfo", (req, res) => {
   let lat = req.query.lat || 37.564939;
@@ -181,9 +182,10 @@ router.get("/totalinfo", (req, res) => {
 });
 
 
-/*
+/*기
  Request to Open API (Air Polution predict)
  1. TODO: cron - 05시, 11시, 17시, 23시 마다
+ 2. TODO: 중복데이터 없애기
  */
 router.get("/dustpredicate", (req, res) => {
   let searchDate = req.query.searchDate || Dateformatter(new Date);
@@ -198,8 +200,7 @@ router.get("/dustpredicate", (req, res) => {
 
 /*
 Request to Open API (Air Polution info)
-1. TODO: cron 돌릴때 17개 측정소당 돌릴것
-2. TODO: HOURLY가 아니라서 중복데이터가 너무 많아짐 - 측정소당 시간정보만 가져올방법 찾아보기
+1. TODO: cron 1시간마다 17개 측정소당 돌릴것
  */
 router.get("/dustinfo", (req, res) => {
   let location;
