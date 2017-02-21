@@ -176,19 +176,13 @@ router.get("/dustpredicate", (req, res) => {
 });
 
 /*
- Request to Open API (Air Polution info)
- 1. TODO: 관측소별 조회, dataTerm별 조회, pageNo별 조회, numOfRows별 조회
- 2. TODO: Server mongoDB에 저장
- 3. TODO: Google search keyword: get request parameter express
+Request to Open API (Air Polution info) : cron 돌릴때 17개 측정소당 돌릴것
  */
 router.get("/dustinfo", (req, res) => {
   let location;
   (req.query.hasOwnProperty("location")) ? location = req.query.location : location = "중구";
-  let term = req.query.term || "DAILY";
-  let pageNo = req.query.pageNo || 1;
-  let numOfRows = req.query.numOfRows || 1000;
 
-  PublicAPI.getAirPolutionInfo(location, term, pageNo, numOfRows).then((result) => {
+  PublicAPI.getAirPolutionInfo(location).then((result) => {
     res.status(200).json({data: result});
   }).catch((err) => {
     res.status(500).json({res: "dust info fail", errorMsg: err});
