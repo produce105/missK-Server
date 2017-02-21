@@ -183,7 +183,7 @@ router.get("/dustpredicate", (req, res) => {
  */
 router.get("/dustinfo", (req, res) => {
   let location;
-  (req.query.hasOwnProperty("location")) ? location = req.query.location : location = "종로구";
+  (req.query.hasOwnProperty("location")) ? location = req.query.location : location = "중구";
   let term = req.query.term || "DAILY";
   let pageNo = req.query.pageNo || 1;
   let numOfRows = req.query.numOfRows || 1000;
@@ -195,28 +195,6 @@ router.get("/dustinfo", (req, res) => {
     log.warn("dust info fail" + new Date().getUTCDate());
   });
 });
-
-/****************************************************************/
-/*
- Request to Open API (Air Polution info)
- 1. TODO: 관측소별 조회, dataTerm별 조회, pageNo별 조회, numOfRows별 조회
- 2. TODO: Server mongoDB에 저장
- 3. TODO: Google search keyword: get request parameter express
- */
-router.get("/dustinfo2", (req, res) => {
-  let sidoName;
-  (req.query.hasOwnProperty("sido")) ? sidoName = req.query.sido : sidoName = "종로구";
-  let pageNo = req.query.pageNo || 1;
-  let numOfRows = req.query.numOfRows || 1000;
-
-  PublicAPI.getPolutionInfo(sidoName, pageNo, numOfRows).then((result) => {
-    res.status(200).json({data: result});
-  }).catch((err) => {
-    res.status(500).json({res: "dust info fail", errorMsg: err});
-    log.warn("dust info fail" + new Date().getUTCDate());
-  });
-});
-/****************************************************************/
 
 function Dateformatter(today)
 {
