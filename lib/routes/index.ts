@@ -162,8 +162,7 @@ router.get("/getpredict", (req, res) => {
 
 /*
  Request to Open API (Air Polution predict)
- 1. TODO: 날짜별로 조회하기. querystring으로 ? 뒤에 날짜가 오는 것 별로 조회. 또는 시간별 조회
- 2. TODO: Server mongoDB에 저장
+ 1. TODO: cron - 05시, 11시, 17시, 23시 마다
  */
 router.get("/dustpredicate", (req, res) => {
   let searchDate = req.query.searchDate || Dateformatter(new Date);
@@ -176,7 +175,9 @@ router.get("/dustpredicate", (req, res) => {
 });
 
 /*
-Request to Open API (Air Polution info) : cron 돌릴때 17개 측정소당 돌릴것
+Request to Open API (Air Polution info) 
+1. TODO: cron 돌릴때 17개 측정소당 돌릴것
+2. TODO: HOURLY가 아니라서 중복데이터가 너무 많아짐 - 측정소당 시간정보만 가져올방법 찾아보기
  */
 router.get("/dustinfo", (req, res) => {
   let location;
