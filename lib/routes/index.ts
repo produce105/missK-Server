@@ -125,9 +125,45 @@ router.delete("/dust/:id", (req, res) => {
   });
 });
 
+
+/*
+ Request to MongoDB
+ */
+router.get("/getdust", (req, res) => {
+  let date = req.query.date || Dateformatter(new Date);
+  let time = req.query.hour || new Date().getHours();
+
+  PublicAPI.readDustInfo(date,time).then((result) => {
+    res.status(200).json({res: "Dust get success", data: result});
+  }).catch((err) => {
+    res.status(500).json({res: "Dust get fail", errorMsg: err});
+    log.warn("test info fail" + new Date().getUTCDate());
+  });
+
+});
+
+
+/*
+ Request to MongoDB predict date
+ */
+router.get("/getpredict", (req, res) => {
+  let date = req.query.date || Dateformatter(new Date);
+  let time = req.query.hour || new Date().getHours();
+
+  PublicAPI.readPredictInfo(date,time).then((result) => {
+    res.status(200).json({res: "Dust get success", data: result});
+  }).catch((err) => {
+    res.status(500).json({res: "Dust get fail", errorMsg: err});
+    log.warn("test info fail" + new Date().getUTCDate());
+  });
+
+});
+
+
+
 /*
  Request to MongoDB predict infomation
- 1. TODO:
+ 1. TODO: HOURLY가 아니라서 중복데이터가 너무 많아짐 - 측정소당 시간정보만 가져올방법 찾아보기
  */
 router.get("/totalinfo", (req, res) => {
   let lat = req.query.lat || 37.564939;
@@ -146,40 +182,6 @@ router.get("/totalinfo", (req, res) => {
 
 
 /*
- Request to MongoDB
- 1. TODO: 오늘의 pm10 pm25 predication 반환하는거
- */
-router.get("/getdust", (req, res) => {
-  let date = req.query.date || Dateformatter(new Date);
-  let time = req.query.hour || new Date().getHours();
-
-  PublicAPI.readDustInfo(date,time).then((result) => {
-    res.status(200).json({res: "Dust get success", data: result});
-  }).catch((err) => {
-    res.status(500).json({res: "Dust get fail", errorMsg: err});
-    log.warn("test info fail" + new Date().getUTCDate());
-  });
-
-});
-
-/*
- Request to MongoDB predict date
- 1. TODO: 오늘,내일,모레 predication 반환하는거
- */
-router.get("/getpredict", (req, res) => {
-  let date = req.query.date || Dateformatter(new Date);
-  let time = req.query.hour || new Date().getHours();
-
-  PublicAPI.readPredictInfo(date,time).then((result) => {
-    res.status(200).json({res: "Dust get success", data: result});
-  }).catch((err) => {
-    res.status(500).json({res: "Dust get fail", errorMsg: err});
-    log.warn("test info fail" + new Date().getUTCDate());
-  });
-
-});
-
-/*
  Request to Open API (Air Polution predict)
  1. TODO: cron - 05시, 11시, 17시, 23시 마다
  */
@@ -192,6 +194,7 @@ router.get("/dustpredicate", (req, res) => {
     log.warn("test info fail" + new Date().getUTCDate());
   });
 });
+
 
 /*
 Request to Open API (Air Polution info)
@@ -209,6 +212,7 @@ router.get("/dustinfo", (req, res) => {
     log.warn("dust info fail" + new Date().getUTCDate());
   });
 });
+
 
 function Dateformatter(today)
 {
