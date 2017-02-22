@@ -125,10 +125,66 @@ router.delete("/dust/:id", (req, res) => {
   });
 });
 
+
+/*
+ Request to MongoDB
+ */
+router.get("/getdust", (req, res) => {
+  let date = req.query.date || Dateformatter(new Date);
+  let time = req.query.hour || new Date().getHours();
+
+  PublicAPI.readDustInfo(date,time).then((result) => {
+    res.status(200).json({res: "Dust get success", data: result});
+  }).catch((err) => {
+    res.status(500).json({res: "Dust get fail", errorMsg: err});
+    log.warn("test info fail" + new Date().getUTCDate());
+  });
+
+});
+
+
+/*
+ Request to MongoDB predict date
+ */
+router.get("/getpredict", (req, res) => {
+  let date = req.query.date || Dateformatter(new Date);
+  let time = req.query.hour || new Date().getHours();
+
+  PublicAPI.readPredictInfo(date,time).then((result) => {
+    res.status(200).json({res: "Dust get success", data: result});
+  }).catch((err) => {
+    res.status(500).json({res: "Dust get fail", errorMsg: err});
+    log.warn("test info fail" + new Date().getUTCDate());
+  });
+
+});
+
+
+
+/*
+ Request to MongoDB predict infomation
+ 1. TODO: DAUM REST API랑 합치기
+ 2. TODO: 지금 시간 Pm정보가 없을때 최근 정보로 보여줄 방법 찾기
+ */
+router.get("/totalinfo", (req, res) => {
+  let lat = req.query.lat || 37.564939;
+  let long = req.query.long || 126.975914;
+  let date = req.query.date || Dateformatter(new Date);
+  let time = req.query.hour || new Date().getHours();
+
+  PublicAPI.getTotalInfo(lat,long,date,time).then((result) => {
+    res.status(200).json({res: "Total info get success", data: result});
+  }).catch((err) => {
+    res.status(500).json({res: "Total info get fail", errorMsg: err});
+    log.warn("test info fail" + new Date().getUTCDate());
+  });
+
+});
+
+
 /*
  Request to Open API (Air Polution predict)
- 1. TODO: 날짜별로 조회하기. querystring으로 ? 뒤에 날짜가 오는 것 별로 조회. 또는 시간별 조회
- 2. TODO: Server mongoDB에 저장
+ 1. TODO: cron - 05시, 11시, 17시, 23시 마다
  */
 router.get("/dustpredicate", (req, res) => {
   let searchDate = req.query.searchDate || Dateformatter(new Date);
@@ -140,26 +196,23 @@ router.get("/dustpredicate", (req, res) => {
   });
 });
 
+
 /*
- Request to Open API (Air Polution info)
- 1. TODO: 관측소별 조회, dataTerm별 조회, pageNo별 조회, numOfRows별 조회
- 2. TODO: Server mongoDB에 저장
- 3. TODO: Google search keyword: get request parameter express
+Request to Open API (Air Polution info)
+1. TODO: cron 1시간마다 17개 측정소당 돌릴것
  */
 router.get("/dustinfo", (req, res) => {
   let location;
-  (req.query.hasOwnProperty("location")) ? location = req.query.location : location = "서울";
-  let term = req.query.term || "DAILY";
-  let pageNo = req.query.pageNo || 1;
-  let numOfRows = req.query.numOfRows || 1000;
+  (req.query.hasOwnProperty("location")) ? location = req.query.location : location = "중구";
 
-  PublicAPI.getAirPolutionInfo(location, term, pageNo, numOfRows).then((result) => {
+  PublicAPI.getAirPolutionInfo(location).then((result) => {
     res.status(200).json({data: result});
   }).catch((err) => {
     res.status(500).json({res: "dust info fail", errorMsg: err});
     log.warn("dust info fail" + new Date().getUTCDate());
   });
 });
+
 
 function Dateformatter(today)
 {
@@ -169,6 +222,7 @@ function Dateformatter(today)
       month ='0'+month;
   if(date.length< 2)
       date ='0'+date;
+
   return today.getFullYear()+'-'+month+'-'+date;
 }
 
