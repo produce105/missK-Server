@@ -169,7 +169,7 @@ router.get("/getpredict", (req, res) => {
  2. TODO: 지금 시간 Pm정보가 없을때 최근 정보로 보여줄 방법 찾기
  */
 router.get("/totalinfo", (req, res) => {
-  let lat = req.query.lat || 37.564939;
+  let lat = req.query.lat  || 37.564939;
   let long = req.query.long || 126.975914;
   let date = req.query.date || Dateformatter(new Date);
   let time = req.query.hour || new Date().getHours();
@@ -224,11 +224,11 @@ Request to Open API (Air Polution info)
 
    dustSave();
 /*
-   PublicAPI.getAirPolutionInfo(dongList[i]).then((result) => {
-   //   res.status(200).json({data: result});
+   PublicAPI.getAirPolutionInfo(location).then((result) => {
+      res.status(200).json({data: result});
    }).catch((err) => {
       console.log("Error");
-      // res.status(500).json({res: "dust info fail", errorMsg: err});
+       res.status(500).json({res: "dust info fail", errorMsg: err});
      log.warn("dust info fail" + new Date().getUTCDate());
    });
 */
@@ -253,7 +253,7 @@ Request to Open API (Air Polution info)
 CRON dustinfo
   */
 let dustinfo = new cronJob({
-    cronTime: '10 10-40/20 * * * *',
+    cronTime: '10 10-30/18 * * * *',
     onTick: function(){
         console.log('D'+ new Date());
 
