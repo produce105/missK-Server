@@ -15,6 +15,9 @@ let bodyParser = require("body-parser");
 
 let index = require("./lib/routes/index");
 
+let cronJob = require('cron').CronJob;
+import {dustSave} from "./lib/routes/index";
+
 let app = express();
 
 // post
@@ -55,6 +58,11 @@ app.use((err, req, res, next) => {
   res.status(err.status).json({"error": err.message});
   // console.log(err);
 });
+
+new cronJob('*/10 * * * * *', function(){
+    console.log('Y'+ new Date());
+    dustSave();
+}, null, true, "Asia/Seoul");
 
 
 export default app;
