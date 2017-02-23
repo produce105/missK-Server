@@ -192,6 +192,14 @@ router.get("/dustpredicate", (req, res) => {
   let searchDate = req.query.searchDate || Dateformatter(new Date);
 
   predictSave();
+/*
+  PublicAPI.getAirPolutionPredict(searchDate).then((result) => {
+    res.status(200).json({data: result});
+  }).catch((err) => {
+    res.status(500).json({res: "Dust dustpredicate fail", errorMsg: err});
+    log.warn("test info fail" + new Date().getUTCDate());
+  });
+*/
 });
 
 export function predictSave() {
@@ -215,6 +223,15 @@ Request to Open API (Air Polution info)
    (req.query.hasOwnProperty("location")) ? location = req.query.location : location = "장천동";
 
    dustSave();
+/*
+   PublicAPI.getAirPolutionInfo(dongList[i]).then((result) => {
+   //   res.status(200).json({data: result});
+   }).catch((err) => {
+      console.log("Error");
+      // res.status(500).json({res: "dust info fail", errorMsg: err});
+     log.warn("dust info fail" + new Date().getUTCDate());
+   });
+*/
  });
 
  export function dustSave() {
@@ -235,17 +252,23 @@ Request to Open API (Air Polution info)
 /*
 CRON dustinfo
   */
- new cronJob('10 5 * * * *', function(){
-     console.log('Y'+ new Date());
+let dustinfo = new cronJob({
+    cronTime: '10 10-40/20 * * * *',
+    onTick: function(){
+        console.log('D'+ new Date());
 
-     dustSave();
- }, null, true, "Asia/Seoul");
+        dustSave();
+    },
+    start: false,
+    timeZone: 'Asia/Seoul'
+});
+dustinfo.start();
 
  /*
  CRON dustpredicate
    */
 let dustpredict = new cronJob({
-    cronTime: '10 5 5-23/6 * * *',
+    cronTime: '10 10 5-23/6 * * *',
     onTick: function() {
         console.log('P '+ new Date());
 
