@@ -15,4 +15,6 @@ exports.default = {
     AIR_PREDICATE: "getMinuDustFrcstDspth",
     INFO_LOG_PATH: __dirname + "/logs/myapp-info.log",
     WARN_LOG_PATH: __dirname + "/logs/myapp-warn.log",
+    DAUM_API_URL: "https://apis.daum.net/local/geo/coord2addr",
+    DAUM_API_KEY: "ebe0a39c64626e4432d75ce31cd5b90f",
 };
