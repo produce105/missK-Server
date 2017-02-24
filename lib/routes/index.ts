@@ -253,7 +253,7 @@ Request to Open API (Air Polution info)
 CRON dustinfo
   */
 let dustinfo = new cronJob({
-    cronTime: '10 10-30/18 * * * *',
+    cronTime: '10 30 * * * *',
     onTick: function(){
         console.log('D'+ new Date());
 
